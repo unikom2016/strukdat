@@ -11,7 +11,6 @@ type
 var
   i         : longint;
   arr_data  : arr_angka;
-  arr_temp  : arr_angka;
   max       : longint;
   n         : longint;
 
@@ -44,35 +43,14 @@ var
       writeln('=== MAXIMUM FUNCTION ===');
       max := arr[0];
       for i := 1 to (n - 1) do
-      begin
           if (arr[i] > max) then
           begin
             max := arr[i]; 
           end;
-      end;
-
+            
       getMax := max;
-      writeln('maximum: ', max);
   end;
 
-  function getMin(arr: arr_angka; n: longint): longint;
-  var
-    i, min: longint;
-  begin
-      writeln;
-      writeln('=== MINIMUM FUNCTION ===');
-      min := arr[0];
-      for i := 1 to (n - 1) do
-      begin
-          if (arr[i] < min) then
-          begin
-            min := arr[i]; 
-          end;
-      end;
-
-      getMin := min;
-      writeln('minimum: ', min);
-  end;
 {/* 
  * count sort of arr[]
  */}
@@ -99,7 +77,6 @@ begin
     end;
 
     // for (i := 1; i < 10; i++)
-    // greater than
     for i := 1 to (total - 1) do
     begin
       writeln('count: ', count[i]);
@@ -107,7 +84,6 @@ begin
     end;
     
     // for (i := n - 1; i >:= 0; i--)
-    // greater than
     for i := (n - 1) downto 0 do
     begin
         output[ count[ ((arr[i] div exp) mod 10) ] - 1 ] := arr[i];
@@ -132,36 +108,17 @@ begin
     writeln('=== START RADIX SORT PROCEDURE ===');
     exp := 1;
     m := getMax(arr, n);
-    // m := getMin(arr, n);
     // for (int exp := 1; m / exp > 0; exp *:= 10)
     writeln;
     writeln('m: ', m);
     while ((m div exp) > 0) do
     begin
-    // repeat
         exp := exp * 10;
-        writeln;
-        writeln('m / exp: ', (m div exp));
         writeln('exp: ', exp);
         countSort(arr, n, exp);
     end;
-    // until ((m div exp) > 0);
     writeln('=== END RADIX SORT PROCEDURE ===');
     writeln;
-end;
-
-function reverseSort(arr: arr_angka; n: integer): arr_angka;
-var
-  i         : integer;
-  arr_temp  : arr_angka;
-begin
-  createArray(arr_temp);
-  for i := 1 to n do
-  begin
-    arr_temp[i - 1] := arr[n - i];
-    // writeln(arr_temp[i]);
-  end;
-  reverseSort := arr_temp;
 end;
  
 {/*
@@ -180,22 +137,17 @@ begin
     arr_data[6] := 2;
     arr_data[7] := 66;
     
-    arr_temp := arr_data;
+    write('unsorted: ');
+    for i := 0 to (n - 1) do
+    begin
+      write(arr_data[i], ' ');
+    end;
 
     n := sizeof(arr_data) div sizeof(arr_data[0]);
     radixsort(arr_data, n);
     
     writeln;
 
-    write('unsorted: ');
-    for i := 0 to (n - 1) do
-    begin
-      write(arr_temp[i], ' ');
-    end;
-
-    writeln;
-
-    arr_data := reverseSort(arr_data, n);
     write('sorted  : ');
     for i := 0 to (n - 1) do
     begin

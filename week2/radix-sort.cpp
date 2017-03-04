@@ -59,6 +59,7 @@ void radixsort(int arr[], int n)
     // where i is current digit number
     for (int exp = 1; m/exp > 0; exp *= 10) {
         cout << endl;
+        cout << "m / exp: " << (m / exp) << endl;
         cout << "exp: " << exp << endl;
         countSort(arr, n, exp);
     }
