@@ -67,7 +67,6 @@ procedure copyList(i/o head1, tail1, head2, tail2: pointer)
   temp <- head1
   head2 <- temp
   while (temp != nil) do
-    temp <- temp^.next
     if (temp^.info < head2^.info) then
       insertAtFront(temp^.info, head2, tail2) // elaborate more
     else if (temp^.info > tail2^.info) then
@@ -75,5 +74,6 @@ procedure copyList(i/o head1, tail1, head2, tail2: pointer)
     else
       insertAtMid(temp^.info, head2, tail2) // elaborate more
     endif
+    temp <- temp^.next
   endwhile
 endprocedure

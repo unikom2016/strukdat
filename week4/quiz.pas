@@ -1,5 +1,7 @@
+{Judul}
 program quiz_copy_linkedlist;
 
+{Kamus Global}
 type
   ptr = ^node;
   node = record
@@ -11,11 +13,17 @@ var
   head1, head2, tail1, tail2 : ptr;
   
 procedure create(var head, tail: ptr);
+{I.S.:}
+{F.S.:}
+{Kamus}
+{Algoritma}
 begin
   head := nil; tail := nil;
 end;
 
 procedure insertAtFront(elem: integer; var head, tail: ptr);
+{I.S.:}
+{F.S.:}
 {Kamus}
 var
   temp : ptr;
@@ -35,8 +43,12 @@ end;
 
 // procedure insertAtMid(elem, elemToInsert: integer; var head, tail: ptr);
 procedure insertAtMid(elem: integer; var head, tail: ptr);
+{I.S.:}
+{F.S.:}
+{Kamus}
 var
   temp, change : ptr;
+{Algoritma}
 begin
   new(change); new(temp);
   change^.info := elem;
@@ -53,6 +65,8 @@ begin
 end;
 
 procedure insertAtBack(elem: integer; var head, tail: ptr);
+{I.S.:}
+{F.S.:}
 {Kamus}
 var
   temp : ptr;
@@ -72,13 +86,21 @@ begin
 end;
 
 procedure destroy(var head, tail: ptr);
+{I.S.:}
+{F.S.:}
+{Kamus}
+{Algoritma}
 begin
   head := nil; tail := nil;
 end;
 
 procedure show(head, tail: ptr);
+{I.S.:}
+{F.S.:}
+{Kamus}
 var
   temp : ptr;
+{Algoritma}
 begin
   temp := head;
   while (temp <> nil) do
@@ -86,6 +108,7 @@ begin
     write(temp^.info, ' ');
     temp := temp^.next;
   end;
+  writeln;
 end;
 
 procedure copyList(head1, tail1: ptr; var head2, tail2: ptr);
@@ -136,8 +159,6 @@ begin
   insertAtFront(2, head1, tail1);
   insertAtFront(3, head1, tail1);
   show(head1, tail1);
-
-  writeln;
 
   create(head2, tail2);
   copyList(head1, tail1, head2, tail2);
