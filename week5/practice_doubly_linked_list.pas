@@ -20,6 +20,7 @@ var
   head1, tail1, head2, tail2 : point;
   elem       : string; // as nim temporary
   again      : char; // to hold when user needs to another data
+  datahapus  : boolean;
 
 { Create }
 procedure create(var head, tail : point);
@@ -216,6 +217,47 @@ begin
   end;
 end;
 
+// procedure search(head, tail : point);
+function search(head, tail : point): boolean;
+var
+  temp  : point;
+  nim   : string;
+  found : boolean;
+begin
+  write('Masukkan NIM yang dicari : '); readln(nim);
+  temp := head;
+  found := false;
+  while (not found) and (temp <> nil) do
+  begin
+    if (temp^.info.nim = nim) then
+    begin
+      // writeln('executed true?');
+      found := true;
+    end
+    else
+    begin
+      // writeln('executed false?');
+      temp := temp^.next;  
+    end;
+  end;
+
+  if (found) then
+  begin
+    writeln('Data ditemukan: ', found);
+  end
+  else
+  begin
+    writeln('Data ditemukan: ', found);
+  end;
+
+  search := found;
+end;
+
+procedure deleteAtFirst(head, tail : point);
+begin
+  
+end;
+
 { Destroy }
 procedure destroy(var head, tail : point);
 var
@@ -249,6 +291,13 @@ begin
   // sort list
   sort(head1, tail1, head2, tail2);
   show(head2, tail2);
+
+  datahapus := search(head2, tail2);
+  if (datahapus) then
+  begin
+    deleteAtFirst()
+  end;
+  // hapus
 
   // destroy(head, tail);
   // if (head = nil) then
