@@ -1,6 +1,6 @@
 program CollegeStudentWithDoubleLinkedList;
-{I. S   : Membuat program yang berisi daftar film dengan menggunakan double linklist}
-{F. S   : }
+{I. S   : Program memasukkan data mahasiswa}
+{F. S   : Menghasilkan data mahasiswa}
 
 { Kamus Global }
 uses crt;
@@ -8,24 +8,19 @@ uses crt;
 type
   Ptr = ^Data;
 
-  Curriculum = record
-    mtk, ing, ind : real;
-  end;
-
   CollegeStudent = record
-    nim, nama  : string;
-    nilai      : Curriculum;
-    ipk        : real;
+    id, name : string;
+    gpa      : real;
   end;
 
   Data = record
-        info         : CollegeStudent;
-        pPrev, pNext : Ptr;
+    info         : CollegeStudent;
+    pPrev, pNext : Ptr;
   end;
 
 var
-   pHead, pTail  : Ptr;
-   pilih         : integer;
+   pHead, pTail : Ptr;
+   select       : integer;
 
 procedure create(var pHead, pTail : Ptr);
 {I.S. : pHead dan pTail belum terdefinisi}
@@ -37,161 +32,124 @@ begin
   pTail := nil;
 end; // EndProcedure create()
 
-procedure showMenu();
-{I.S. : }
-{F.S. : Menampilkan menu}
-{Kamus Tidak Ada}
-{Algoritma}
-begin
-    clrscr;
-    gotoxy(25,5);  WriteLn('-------------------------------------------');
-    gotoxy(25,6);  writeln('|       College Student Admission         |');
-    gotoxy(25,7);  writeln('-------------------------------------------');
-    gotoxy(25,8);  writeln('|  1.  Insert Data                        |');
-    gotoxy(25,9);  writeln('|  2.  Delete Data                        |');
-    gotoxy(25,10); writeln('|  3.  Search Data                        |');
-    gotoxy(25,11); writeln('|  4.  Show Data                          |');
-    gotoxy(25,12); writeln('|  5.  Exit                               |');
-    gotoxy(25,13); writeln('-------------------------------------------');
-end; // EndProcedure showMenu()
-
 procedure insertAtFront(var pHead, pTail : Ptr);
 {I.S. : }
 {F.S. : }
 {Kamus Lokal}
 var
-   baru, bantu : Ptr;
-   found      : boolean;
-   k           : integer;
+   pNew, pHelp : Ptr;
+   found       : boolean;
+   i           : integer;
 {Algoritma}
 begin
-     New(Baru);
+  new(pNew);
+  i := 1;
+  gotoxy(15,9);  writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,10); writeln('|                              Input Student Data                                  |');
+  gotoxy(15,11); writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,12); writeln('|  No  |         Student ID         |                Name                  |  GPA  |');
+  
+  gotoxy(15,13); writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,14); writeln('|      |                            |                                      |       |');
+  gotoxy(15,15); writeln('------------------------------------------------------------------------------------');
+  gotoxy(17,14); write(i);
+  gotoxy(24,14); readln(pNew^.info.id);
+  gotoxy(53,14); readln(pNew^.info.name);
+  gotoxy(92,14); readln(pNew^.info.gpa);
 
-     gotoxy(10,9);  writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,10); writeln('|                                   MASUKAN DATA DAFTAR FILM                                         |');
-     gotoxy(10,11); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,12); writeln('|        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-     gotoxy(10,13); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,14); writeln('|                      |                                       |        |         |RP.               |');
-     gotoxy(10,15); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(11,14); write(' '); readln(baru^.info.Genre);
+  If (pHead = nil) then
+  begin
+    pNew^.pNext := nil;
+    pNew^.pPrev := nil;
+    pTail := pNew;
+  end
+  else
+  begin
+    pNew^.pNext := pHead;
+    pHead^.pPrev := pNew;
+  end;
 
-     gotoxy(34,14); write(' '); readln(baru^.info.Judul);
-     gotoxy(75,14); write(' '); readln(baru^.info.Rating);
-     gotoxy(84,14); write(' '); readln(baru^.info.Tahun);
-     gotoxy(96,14); write(' '); readln(baru^.info.Harga);
+  pHead := pNew;
+end; // EndProcedure insertAtFront
 
-     for k:= 2 to 3 do
-         begin
-              baru^.info.Kode := baru^.info.Kode + baru^.info.Judul[k];
-         end;
+{}
+// procedure insertAtBack(var pHead, pTail : Ptr);
+// {I.S. : }
+// {F.S. : }
+// var
+//    pNew, pHelp : Ptr;
+//    found      : boolean;
+//    k           : integer;
 
-     for k:= 1 to 2 do
-         baru^.info.Kode := baru^.info.Kode + baru^.info.Genre[k];
+// begin
+//      New(pNew);
 
+//      gotoxy(15,9);  writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(15,15); writeln('|                                   MASUKAN DATA DAFTAR FILM                                         |');
+//      gotoxy(15,11); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(15,12); writeln('|        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
+//      gotoxy(15,13); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(15,14); writeln('|                      |                                       |        |         |RP.               |');
+//      gotoxy(15,15); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(11,14); write(' '); readln(pNew^.info.Genre);
 
-     If (pHead = nil) then
-       begin
-            baru^.pNext := nil;
-            baru^.pPrev := nil;
-            pHead := baru;
-            pTail := baru;
-       end
-          else
-              begin
-                   baru^.pNext := nil;
-                   baru^.pNext := pHead;
-                   pHead^.pPrev := baru;
-                   pHead := baru;
-              end;
-end;
+//      {
+//      for i:=1 to 2 do
+//          begin
+//               code_addLast := code_addLast + pNew^.info.Genre[i];
+//          end;
 
-
-
-
-
-
-procedure SisipBelakang(var pHead, pTail : Ptr);
-{I.S. : }
-{F.S. : }
-var
-   baru, bantu : Ptr;
-   found      : boolean;
-   k           : integer;
-
-begin
-     New(Baru);
-
-     gotoxy(10,9);  writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,10); writeln('|                                   MASUKAN DATA DAFTAR FILM                                         |');
-     gotoxy(10,11); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,12); writeln('|        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-     gotoxy(10,13); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,14); writeln('|                      |                                       |        |         |RP.               |');
-     gotoxy(10,15); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(11,14); write(' '); readln(baru^.info.Genre);
-
-     {
-     for i:=1 to 2 do
-         begin
-              code_addLast := code_addLast + baru^.info.Genre[i];
-         end;
-
-     baru^.info.Kode := code_addLast;
-     }
+//      pNew^.info.Kode := code_addLast;
+//      }
 
 
-     gotoxy(34,14); write(' '); readln(baru^.info.Judul);
-     gotoxy(75,14); write(' '); readln(baru^.info.Rating);
-     gotoxy(84,14); write(' '); readln(baru^.info.Tahun);
-     gotoxy(96,14); write(' '); readln(baru^.info.Harga);
+//      gotoxy(34,14); write(' '); readln(pNew^.info.Judul);
+//      gotoxy(75,14); write(' '); readln(pNew^.info.Rating);
+//      gotoxy(84,14); write(' '); readln(pNew^.info.Tahun);
+//      gotoxy(96,14); write(' '); readln(pNew^.info.Harga);
 
-     for k:= 2 to 3 do
-         begin
-              baru^.info.Kode := baru^.info.Kode + baru^.info.Judul[k];
-         end;
+//      for k:= 2 to 3 do
+//          begin
+//               pNew^.info.Kode := pNew^.info.Kode + pNew^.info.Judul[k];
+//          end;
 
-     for k:= 1 to 2 do
-         baru^.info.Kode := baru^.info.Kode + baru^.info.Genre[k];
-
-
-     If (pHead = nil) then
-       begin
-            baru^.pNext := nil;
-            baru^.pPrev := nil;
-            pHead := baru;
-            pTail := baru;
-       end
-          else
-              begin
-                   baru^.pPrev := pTail;
-                   baru^.pNext := nil;
-                   pTail^.pNext := baru;
-                   pTail := baru;
-              end;
-end;
+//      for k:= 1 to 2 do
+//          pNew^.info.Kode := pNew^.info.Kode + pNew^.info.Genre[k];
 
 
-
-
+//      If (pHead = nil) then
+//        begin
+//             pNew^.pNext := nil;
+//             pNew^.pPrev := nil;
+//             pHead := pNew;
+//             pTail := pNew;
+//        end
+//           else
+//               begin
+//                    pNew^.pPrev := pTail;
+//                    pNew^.pNext := nil;
+//                    pTail^.pNext := pNew;
+//                    pTail := pNew;
+//               end;
+// end;
 
 {
 procedure SisipTengah(var pHead, pTail : Ptr);
 
 begin
-     bantu := pHead;
+     pHelp := pHead;
      found := False;
-     gotoxy(10,11); writeln('--------------------------------------');
-     gotoxy(10,12); write  ('|  CARI BERDASARKAN INDEX  |          |'); readln(Cari);
-     gotoxy(10,13); writeln('--------------------------------------');
-     while (not found) and (bantu <> nil) do
+     gotoxy(15,11); writeln('--------------------------------------');
+     gotoxy(15,12); write  ('|  CARI BERDASARKAN INDEX  |          |'); readln(Cari);
+     gotoxy(15,13); writeln('--------------------------------------');
+     while (not found) and (pHelp <> nil) do
            begin
-               if (dataCari = bantu^.info.Tahun) then
+               if (dataCari = pHelp^.info.Tahun) then
                  begin
                       found := True;
                  end
                  else
-                     bantu := bantu^.pNext;
+                     pHelp := pHelp^.pNext;
            end;
 
      if (found) then
@@ -202,558 +160,431 @@ begin
 end;
 }
 
+procedure showMenu(var select : integer);
+{I.S. : }
+{F.S. : Menampilkan menu}
+{Kamus Tidak Ada}
+{Algoritma}
+begin
+    clrscr;
+    gotoxy(50,5);  writeln('-------------------------------------------');
+    gotoxy(50,6);  writeln('|       College Student Admission         |');
+    gotoxy(50,7);  writeln('-------------------------------------------');
+    gotoxy(50,8);  writeln('|  1.  Insert Data                        |');
+    gotoxy(50,9);  writeln('|  2.  Delete Data                        |');
+    gotoxy(50,10); writeln('|  3.  Search Data                        |');
+    gotoxy(50,11); writeln('|  4.  Show Data                          |');
+    gotoxy(50,12); writeln('|  5.  Exit                               |');
+    gotoxy(50,13); writeln('-------------------------------------------');
+    gotoxy(50,15); write('Select  : '); readln(select);
+end; // EndProcedure showMenu()
 
-
-procedure TambahData();
+procedure addData(var pHead, pTail : Ptr);
 {I.S. : }
 {F.S. : }
 var
-   pilih : integer;
-
+   select : integer;
+{ Algoritma }
 begin
-     gotoxy(25,5);  WriteLn('-------------------------------------------');
-     gotoxy(25,6);  writeln('|            PILIH TAMNAH DATA            |');
-     gotoxy(25,7);  writeln('-------------------------------------------');
-     gotoxy(25,8);  writeln('|  1  |  SISIP DEPAN                      |');
-     gotoxy(25,9);  writeln('|  2  |  SISIP BELAKANG                   |');
-     gotoxy(25,10); writeln('|  3  |  SISIP TENGAH                     |');
-     gotoxy(25,11); writeln('-------------------------------------------');
-     gotoxy(37,13); write('Pilih  : '); readln(pilih);
+  gotoxy(50,5);  writeln('-------------------------------------------');
+  gotoxy(50,6);  writeln('|         Select insertion method         |');
+  gotoxy(50,7);  writeln('-------------------------------------------');
+  gotoxy(50,8);  writeln('|  1.  Insert at Front                    |');
+  gotoxy(50,9);  writeln('|  2.  Insert at Back                     |');
+  gotoxy(50,10); writeln('|  3.  Insert at Middle                   |');
+  gotoxy(50,11); writeln('-------------------------------------------');
+  gotoxy(50,13); write('Select  : '); readln(select);
 
-     clrscr;
-     //mencari berdasarkan judul
-     if (pilih = 1) then
-        insertAtFront(pHead, pTail)
-        else if (pilih = 2) then
-                SisipBelakang(pHead, pTail);
-                {
-                else if (pilih = 3) then
-                       CariTahun()
-                       else
-                           gotoxy(37,13); writeln('Data yang anda masukan salah!');
-      }
-
+  clrscr;
+  //mencari berdasarkan judul
+  if (select = 1) then
+  begin
+    insertAtFront(pHead, pTail);
+    // write('front'); readln;
+  end
+  else if (select = 2) then
+  begin
+    // insertAtBack(pHead, pTail);
+    write('back'); readln;
+  end
+  else if (select = 3) then
+  begin
+    // insertAtBack(pHead, pTail);
+    write('middle'); readln;
+  end;
 end;
 
-
-
-
-
-
-
-procedure TampilData();
+procedure showData(pHead : Ptr);
 {I.S. : }
 {F.S. : }
+{Kamus Lokal}
 var
-   bantu    : Ptr;
-   i, j, k  : integer;
-
+   pHelp    : Ptr;
+   i, k     : integer;
+{Algoritma}
 begin
-     gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-     gotoxy(1,2);  writeln('|                                            MASUKAN DATA DAFTAR FILM                                               |');
-     gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
-     gotoxy(1,4);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-     gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
-     bantu := pHead;
-     i := 6;
-     j := 7;
-     k := 1;
-     while (bantu <> nil) do
-           begin
-                gotoxy(16,i);  writeln('| ',upcase(bantu^.info.Genre));
-                {
-                for k:= 1 to 2 do
-                    bantu^.info.Kode := bantu^.info.Kode + bantu^.info.Genre[k];
-                 }
-                bantu^.info.Index := k;
-                gotoxy(1,i);   writeln('| ',bantu^.info.Index,'-',bantu^.info.Kode);
-                gotoxy(39,i);  writeln('|  ',upcase(bantu^.info.Judul));
-                gotoxy(79,i);  writeln('|  ',bantu^.info.Rating:2:1);
-                gotoxy(88,i);  writeln('| ',bantu^.info.Tahun);
-                gotoxy(98,i);  writeln('|Rp. ',bantu^.info.Harga);
-                gotoxy(117,i); writeln('|');
-                bantu := bantu^.pNext;
-                i := i+1;
-                j := j+1;
-                k := k+1;
-           end;
-     gotoxy(1,j-1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-     readln;
+  gotoxy(15,9);  writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,10); writeln('|                             Display Student Data                                 |');
+  gotoxy(15,11); writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,12); writeln('|  No  |         Student ID         |                Name                  |  GPA  |');
+  gotoxy(15,13); writeln('------------------------------------------------------------------------------------');
+
+  pHelp := pHead;
+  i := 1; k := 13;
+
+  while (pHelp <> nil) do
+  begin
+    gotoxy(15,k+i); writeln('|      |                            |                                      |       |');
+    gotoxy(17,k+i); write(i);
+    gotoxy(24,k+i); write(pHelp^.info.id);
+    gotoxy(53,k+i); write(pHelp^.info.name);
+    gotoxy(92,k+i); write(pHelp^.info.gpa:2:1);
+
+    inc(i);
+    pHelp := pHelp^.pNext;
+  end;
+
+  gotoxy(15,k+i); writeln('------------------------------------------------------------------------------------');
+  readln;
 end;
 
+// procedure CariJudul();
+// {I.S. : }
+// {F.S. : }
+// var
+//    pHelp    : Ptr;
+//    Cari     : string;
+//    found   : boolean;
+
+// begin
+//      found := False;
+//      pHelp := pHead;
+//      Cari := upcase(Cari);
+//      gotoxy(15,11); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(15,12); writeln('|  CARI JUDUL FILM     |                                                                             |');
+//      gotoxy(15,13); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(34,12); write(''); readln(Cari);
+
+//      while (not found) and (pHelp <> nil) do
+//           begin
+//               if (Cari = pHelp^.info.Judul) then
+//                  found := True
+//                  else
+//                      pHelp := pHelp^.pNext;
+//           end;
+
+//      clrscr;
+//      if (found) then
+//        begin
+//            gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//            gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
+//            gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
+
+//            gotoxy(1,4);   writeln('|');
+//            gotoxy(1,4);   writeln('| ',upcase(pHelp^.info.Kode));
+//            gotoxy(1,4);   writeln('| ',pHelp^.info.Index,'-',pHelp^.info.Kode);
+//            gotoxy(16,4);  writeln('| ',upcase(pHelp^.info.Genre));
+//            gotoxy(39,4);  writeln('|  ',upcase(pHelp^.info.Judul));
+//            gotoxy(79,4);  writeln('|  ',pHelp^.info.Rating:2:1);
+//            gotoxy(88,4);  writeln('| ',pHelp^.info.Tahun);
+//            gotoxy(98,4);  writeln('|Rp. ',pHelp^.info.Harga);
+//            gotoxy(117,4); writeln('|');
+
+//            gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//        end
+//        else
+//            writeln('Data tidak di temukan!');
+
+//        readln;
+// end;
+
+// procedure CariGenre();
+// {I.S. : }
+// {F.S. : }
+// var
+//    pHelp      : Ptr;
+//    dataCari   : string;
+//    //found   : boolean;
+//    i, j       : integer;
+
+// begin
+//      //found := False;
+//      pHelp := pHead;
+//      gotoxy(15,11); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(15,12); writeln('|  CARI GENRE FILM     |                                                                             |');
+//      gotoxy(15,13); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(34,12); write(''); readln(dataCari);
 
 
+//      clrscr;
+//      //tamplet tampilan Cari Tahun
+//      gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//      gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
+//      gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
 
+//      i := 4;
+//      j := 5;
+//      while (pHelp <> nil)do //and (not found) do
+//           begin
+//               if (dataCari = pHelp^.info.Genre) then
+//                  begin
+//                       //found := True
+//                       gotoxy(1,i);   writeln('|');
+//                       gotoxy(1,i);   writeln('| ',pHelp^.info.Index,'-',pHelp^.info.Kode);
+//                       gotoxy(1,i);   writeln('| ',upcase(pHelp^.info.Kode));
+//                       gotoxy(16,i);  writeln('| ',upcase(pHelp^.info.Genre));
+//                       gotoxy(39,i);  writeln('|  ',upcase(pHelp^.info.Judul));
+//                       gotoxy(79,i);  writeln('|  ',pHelp^.info.Rating:2:1);
+//                       gotoxy(88,i);  writeln('| ',pHelp^.info.Tahun);
+//                       gotoxy(98,i);  writeln('|Rp. ',pHelp^.info.Harga);
+//                       gotoxy(117,i); writeln('|');
 
-procedure CariJudul();
-{I.S. : }
-{F.S. : }
-var
-   bantu    : Ptr;
-   Cari     : string;
-   found   : boolean;
+//                       i := i+1;
+//                       j := j+1;
+//                       pHelp := pHelp^.pNext;
+//                  end
+//                  else
+//                      pHelp := pHelp^.pNext;
+//           end;
 
-begin
-     found := False;
-     bantu := pHead;
-     Cari := upcase(Cari);
-     gotoxy(10,11); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,12); writeln('|  CARI JUDUL FILM     |                                                                             |');
-     gotoxy(10,13); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(34,12); write(''); readln(Cari);
+//       //penutup tamplet tampilan Cari Tahun
+//       gotoxy(1,j);  writeln('---------------------------------------------------------------------------------------------------------------------');
 
-     while (not found) and (bantu <> nil) do
-          begin
-              if (Cari = bantu^.info.Judul) then
-                 found := True
-                 else
-                     bantu := bantu^.pNext;
-          end;
+//      {
+//      if (found) then
+//        begin
+//            gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//            gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
+//            gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
 
-     clrscr;
-     if (found) then
-       begin
-           gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-           gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-           gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//            gotoxy(1,4);   writeln('|');
+//            gotoxy(16,4);  writeln('| ',upcase(pHelp^.info.Genre));
+//            gotoxy(39,4);  writeln('|  ',upcase(pHelp^.info.Judul));
+//            gotoxy(79,4);  writeln('|  ',pHelp^.info.Rating:2:1);
+//            gotoxy(88,4);  writeln('| ',pHelp^.info.Tahun);
+//            gotoxy(98,4);  writeln('|Rp. ',pHelp^.info.Harga);
+//            gotoxy(117,4); writeln('|');
 
-           gotoxy(1,4);   writeln('|');
-           gotoxy(1,4);   writeln('| ',upcase(bantu^.info.Kode));
-           gotoxy(1,4);   writeln('| ',bantu^.info.Index,'-',bantu^.info.Kode);
-           gotoxy(16,4);  writeln('| ',upcase(bantu^.info.Genre));
-           gotoxy(39,4);  writeln('|  ',upcase(bantu^.info.Judul));
-           gotoxy(79,4);  writeln('|  ',bantu^.info.Rating:2:1);
-           gotoxy(88,4);  writeln('| ',bantu^.info.Tahun);
-           gotoxy(98,4);  writeln('|Rp. ',bantu^.info.Harga);
-           gotoxy(117,4); writeln('|');
+//            gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//        end
+//        else
+//            writeln('Data tidak di temukan!');
 
-           gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
-       end
-       else
-           writeln('Data tidak di temukan!');
+//         }
+//        readln;
+// end;
 
-       readln;
-end;
+// procedure CariTahun();
+// {I.S. : }
+// {F.S. : }
+// var
+//    pHelp    : Ptr;
+//    dataCari : integer;
+//    //found   : boolean;
+//    i, j     : integer;
 
+// begin
+//      //found := False;
+//      pHelp := pHead;
+//      gotoxy(15,11); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(15,12); writeln('|  CARI TAHUN FILM     |                                                                             |');
+//      gotoxy(15,13); writeln('------------------------------------------------------------------------------------------------------');
+//      gotoxy(34,12); write(''); readln(dataCari);
 
+//      clrscr;
+//      //tamplet tampilan Cari Tahun
+//      gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//      gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
+//      gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
 
+//      i := 4;
+//      j := 5;
+//      while (pHelp <> nil)do //and (not found) do
+//           begin
+//               if (dataCari = pHelp^.info.Tahun) then
+//                  begin
+//                       //found := True
+//                       gotoxy(1,i);   writeln('|');
+//                       gotoxy(1,i);   writeln('| ',pHelp^.info.Index,'-',pHelp^.info.Kode);
+//                       gotoxy(1,i);   writeln('| ',upcase(pHelp^.info.Kode));
+//                       gotoxy(16,i);  writeln('| ',upcase(pHelp^.info.Genre));
+//                       gotoxy(39,i);  writeln('|  ',upcase(pHelp^.info.Judul));
+//                       gotoxy(79,i);  writeln('|  ',pHelp^.info.Rating:2:1);
+//                       gotoxy(88,i);  writeln('| ',pHelp^.info.Tahun);
+//                       gotoxy(98,i);  writeln('|Rp. ',pHelp^.info.Harga);
+//                       gotoxy(117,i); writeln('|');
 
+//                       i := i+1;
+//                       j := j+1;
+//                       pHelp := pHelp^.pNext;
+//                  end
+//                  else
+//                      pHelp := pHelp^.pNext;
+//           end;
 
+//       //penutup tamplet tampilan Cari Tahun
+//       gotoxy(1,j);  writeln('---------------------------------------------------------------------------------------------------------------------');
 
-procedure CariGenre();
-{I.S. : }
-{F.S. : }
-var
-   bantu      : Ptr;
-   dataCari   : string;
-   //found   : boolean;
-   i, j       : integer;
+//      {
+//      if (found) then
+//        begin
+//            gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//            gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
+//            gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
 
-begin
-     //found := False;
-     bantu := pHead;
-     gotoxy(10,11); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,12); writeln('|  CARI GENRE FILM     |                                                                             |');
-     gotoxy(10,13); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(34,12); write(''); readln(dataCari);
+//            gotoxy(1,4);   writeln('|');
+//            gotoxy(16,4);  writeln('| ',upcase(pHelp^.info.Genre));
+//            gotoxy(39,4);  writeln('|  ',upcase(pHelp^.info.Judul));
+//            gotoxy(79,4);  writeln('|  ',pHelp^.info.Rating:2:1);
+//            gotoxy(88,4);  writeln('| ',pHelp^.info.Tahun);
+//            gotoxy(98,4);  writeln('|Rp. ',pHelp^.info.Harga);
+//            gotoxy(117,4); writeln('|');
 
+//            gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//        end
+//        else
+//            writeln('Data tidak di temukan!');
 
-     clrscr;
-     //tamplet tampilan Cari Tahun
-     gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-     gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-     gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//         }
+//        readln;
+// end;
 
-     i := 4;
-     j := 5;
-     while (bantu <> nil)do //and (not found) do
-          begin
-              if (dataCari = bantu^.info.Genre) then
-                 begin
-                      //found := True
-                      gotoxy(1,i);   writeln('|');
-                      gotoxy(1,i);   writeln('| ',bantu^.info.Index,'-',bantu^.info.Kode);
-                      gotoxy(1,i);   writeln('| ',upcase(bantu^.info.Kode));
-                      gotoxy(16,i);  writeln('| ',upcase(bantu^.info.Genre));
-                      gotoxy(39,i);  writeln('|  ',upcase(bantu^.info.Judul));
-                      gotoxy(79,i);  writeln('|  ',bantu^.info.Rating:2:1);
-                      gotoxy(88,i);  writeln('| ',bantu^.info.Tahun);
-                      gotoxy(98,i);  writeln('|Rp. ',bantu^.info.Harga);
-                      gotoxy(117,i); writeln('|');
+// procedure MenuPencarian();
+// {I.S. : }
+// {F.S. :}
+// var
+//    select  : integer;
 
-                      i := i+1;
-                      j := j+1;
-                      bantu := bantu^.pNext;
-                 end
-                 else
-                     bantu := bantu^.pNext;
-          end;
+// begin
+//      gotoxy(50,5);  writeln('-------------------------------------------');
+//      gotoxy(50,6);  writeln('|             PILIH PENCARIAN             |');
+//      gotoxy(50,7);  writeln('-------------------------------------------');
+//      gotoxy(50,8);  writeln('|  1  |  MENCARI BERDASARKAN JUDUL        |');
+//      gotoxy(50,9);  writeln('|  2  |  MENCARI BERDASARKAN GENRE        |');
+//      gotoxy(50,15); writeln('|  3  |  MENCARI BERDASARKAN TAHUN        |');
+//      gotoxy(50,11); writeln('-------------------------------------------');
+//      gotoxy(50,13); write('Select  : '); readln(select);
 
-      //penutup tamplet tampilan Cari Tahun
-      gotoxy(1,j);  writeln('---------------------------------------------------------------------------------------------------------------------');
+//      clrscr;
+//      //mencari berdasarkan judul
+//      if (select = 1) then
+//         CariJudul()
+//         else if (select = 2) then
+//                 CariGenre()
+//                 else if (select = 3) then
+//                        CariTahun()
+//                        else
+//                            gotoxy(50,13); writeln('Data yang anda masukan salah!');
 
-     {
-     if (found) then
-       begin
-           gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-           gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-           gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
-
-           gotoxy(1,4);   writeln('|');
-           gotoxy(16,4);  writeln('| ',upcase(bantu^.info.Genre));
-           gotoxy(39,4);  writeln('|  ',upcase(bantu^.info.Judul));
-           gotoxy(79,4);  writeln('|  ',bantu^.info.Rating:2:1);
-           gotoxy(88,4);  writeln('| ',bantu^.info.Tahun);
-           gotoxy(98,4);  writeln('|Rp. ',bantu^.info.Harga);
-           gotoxy(117,4); writeln('|');
-
-           gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
-       end
-       else
-           writeln('Data tidak di temukan!');
-
-        }
-       readln;
-end;
-
-
-
-
-
-
-procedure CariTahun();
-{I.S. : }
-{F.S. : }
-var
-   bantu    : Ptr;
-   dataCari : integer;
-   //found   : boolean;
-   i, j     : integer;
-
-begin
-     //found := False;
-     bantu := pHead;
-     gotoxy(10,11); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(10,12); writeln('|  CARI TAHUN FILM     |                                                                             |');
-     gotoxy(10,13); writeln('------------------------------------------------------------------------------------------------------');
-     gotoxy(34,12); write(''); readln(dataCari);
-
-     clrscr;
-     //tamplet tampilan Cari Tahun
-     gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-     gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-     gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
-
-     i := 4;
-     j := 5;
-     while (bantu <> nil)do //and (not found) do
-          begin
-              if (dataCari = bantu^.info.Tahun) then
-                 begin
-                      //found := True
-                      gotoxy(1,i);   writeln('|');
-                      gotoxy(1,i);   writeln('| ',bantu^.info.Index,'-',bantu^.info.Kode);
-                      gotoxy(1,i);   writeln('| ',upcase(bantu^.info.Kode));
-                      gotoxy(16,i);  writeln('| ',upcase(bantu^.info.Genre));
-                      gotoxy(39,i);  writeln('|  ',upcase(bantu^.info.Judul));
-                      gotoxy(79,i);  writeln('|  ',bantu^.info.Rating:2:1);
-                      gotoxy(88,i);  writeln('| ',bantu^.info.Tahun);
-                      gotoxy(98,i);  writeln('|Rp. ',bantu^.info.Harga);
-                      gotoxy(117,i); writeln('|');
-
-                      i := i+1;
-                      j := j+1;
-                      bantu := bantu^.pNext;
-                 end
-                 else
-                     bantu := bantu^.pNext;
-          end;
-
-      //penutup tamplet tampilan Cari Tahun
-      gotoxy(1,j);  writeln('---------------------------------------------------------------------------------------------------------------------');
-
-     {
-     if (found) then
-       begin
-           gotoxy(1,1);  writeln('---------------------------------------------------------------------------------------------------------------------');
-           gotoxy(1,2);  writeln('|     KODE     |        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-           gotoxy(1,3);  writeln('---------------------------------------------------------------------------------------------------------------------');
-
-           gotoxy(1,4);   writeln('|');
-           gotoxy(16,4);  writeln('| ',upcase(bantu^.info.Genre));
-           gotoxy(39,4);  writeln('|  ',upcase(bantu^.info.Judul));
-           gotoxy(79,4);  writeln('|  ',bantu^.info.Rating:2:1);
-           gotoxy(88,4);  writeln('| ',bantu^.info.Tahun);
-           gotoxy(98,4);  writeln('|Rp. ',bantu^.info.Harga);
-           gotoxy(117,4); writeln('|');
-
-           gotoxy(1,5);  writeln('---------------------------------------------------------------------------------------------------------------------');
-       end
-       else
-           writeln('Data tidak di temukan!');
-
-        }
-       readln;
-end;
-
-
-
-
-
-
-procedure MenuPencarian();
-{I.S. : }
-{F.S. :}
-var
-   pilih  : integer;
-
-begin
-     gotoxy(25,5);  WriteLn('-------------------------------------------');
-     gotoxy(25,6);  writeln('|             PILIH PENCARIAN             |');
-     gotoxy(25,7);  writeln('-------------------------------------------');
-     gotoxy(25,8);  writeln('|  1  |  MENCARI BERDASARKAN JUDUL        |');
-     gotoxy(25,9);  writeln('|  2  |  MENCARI BERDASARKAN GENRE        |');
-     gotoxy(25,10); writeln('|  3  |  MENCARI BERDASARKAN TAHUN        |');
-     gotoxy(25,11); writeln('-------------------------------------------');
-     gotoxy(37,13); write('Pilih  : '); readln(pilih);
-
-     clrscr;
-     //mencari berdasarkan judul
-     if (pilih = 1) then
-        CariJudul()
-        else if (pilih = 2) then
-                CariGenre()
-                else if (pilih = 3) then
-                       CariTahun()
-                       else
-                           gotoxy(37,13); writeln('Data yang anda masukan salah!');
-
-end;
-
-
-
-
+// end;
 
 //pengurutan berdasarkan selection sort (minimal)
-procedure UrutJudul(var pHead, pTail : Ptr);
-{I.S. : }
-{F.S. : }
-var
-    j, i, min, temp : Ptr;
+// procedure UrutJudul(var pHead, pTail : Ptr);
+// {I.S. : }
+// {F.S. : }
+// var
+//     j, i, min, temp : Ptr;
 
+// begin
+//      i := pHead;
+//      while (i <> pTail) do
+//            begin
+//                min^.info := i^.info;
+//                j := i^.pNext;
+//                while (j <> nil) do
+//                      begin
+//                          if (i^.info.Judul > j^.info.Judul) then
+//                             min^.info :=  j
+//                             else
+//                                 j := j^.pNext
+//                      end;
+//                i := i^.pNext;
+//             end;
+
+//       min := temp;
+//       i := j;
+//       j := i;
+
+//       showData();
+//       readln;
+// end;
+
+// procedure Pengurutan();
+// {I.S. : }
+// {F.S. :}
+// var
+//    select  : integer;
+
+// begin
+//      gotoxy(50,5);  writeln('-------------------------------------------');
+//      gotoxy(50,6);  writeln('|             PILIH PENGURUTAN            |');
+//      gotoxy(50,7);  writeln('-------------------------------------------');
+//      gotoxy(50,8);  writeln('|  1  |  PENGURUTAN BERDASARKAN JUDUL     |');
+//      gotoxy(50,9);  writeln('|  2  |  PENGURUTAN BERDASARKAN GENRE     |');
+//      gotoxy(50,15); writeln('|  3  |  PENGURUTAN BERDASARKAN RATING    |');
+//      gotoxy(50,11); writeln('|  4  |  PENGURUTAN BERDASARKAN TAHUN     |');
+//      gotoxy(50,12); writeln('-------------------------------------------');
+//      gotoxy(50,14); write('Select  : '); readln(select);
+
+//      clrscr;
+//      //mencari berdasarkan judul
+//      if (select = 1) then
+//         UrutJudul(pHead, pTail)
+//         else if (select = 2) then
+//                 UrutGenre(pHead, pTail)
+//                 else if (select = 3) then
+//                        UrutRating(pHead, pTail)
+//                        else if (select = 4) then
+//                                UrutTahun(pHead, pTail)
+//                                else
+//                                gotoxy(50,14); writeln('Data yang anda masukan salah!');
+// end;
+
+// procedure Penghancuran(var pHead, pTail : Ptr);
+// {I.S. : }
+// {F.S. : }
+// var
+//    Phapus : Ptr;
+
+// begin
+//      Phapus := pHead;
+//      while (Phapus <> nil) do
+//      begin
+//          pHead := pHead^.pNext;
+//          Dispose(Phapus);
+//          Phapus := pHead;
+//      end; //EndWhile
+//      pTail := nil;
+// end;
+
+{ Algoritma Utama }
 begin
-     i := pHead;
-     while (i <> pTail) do
-           begin
-               min := i;
-               j := i^.pNext;
-               while (j <> nil) do
-                     begin
-                         if (i^.info.Judul > j^.info.Judul) then
-                            min :=  j
-                            else
-                                j := j^.pNext
-                     end;
-               i := i^.pNext;
-            end;
+  create(pHead, pTail);
 
-      min := temp;
-      i := j;
-      j := i;
+  repeat
+    showMenu(select);
+    clrscr;
+    if (select = 1) then
+    begin
+      addData(pHead, pTail);
+    end
+    else if (select = 2) then
+    begin
+      // Pengurutan();
+    end
+    else if (select = 3) then
+    begin
+      // MenuPencarian()
+    end
+    else if (select = 4) then
+    begin
+      showData(pHead);
+    end;
+  until (select <= 0) or (select > 4);
 
-      TampilData();
-      readln;
-end;
-
-
-
-//pengurutan berdasarkan selection sort (minimal)
-procedure UrutGenre(var pHead, pTail : Ptr);
-{I.S. : }
-{F.S. : }
-var
-    j, i, min, temp : Ptr;
-
-begin
-     i := pHead;
-     while (i <> pTail) do
-           begin
-               min := i;
-               j := i^.pNext;
-               while (j <> nil) do
-                     begin
-                         if (i^.info.Genre > j^.info.Genre) then
-                            min :=  j
-                            else
-                                j := j^.pNext
-                     end;
-               i := i^.pNext;
-            end;
-
-      min := temp;
-      i := j;
-      j := i;
-
-      TampilData();
-      readln;
-end;
-
-
-
-
-//pengurutan berdasarkan selection sort (minimal)
-procedure UrutRating(var pHead, pTail : Ptr);
-{I.S. : }
-{F.S. : }
-var
-    j, i, min, temp : Ptr;
-
-begin
-     i := pHead;
-     while (i <> pTail) do
-           begin
-               min := i;
-               j := i^.pNext;
-               while (j <> nil) do
-                     begin
-                         if (i^.info.Rating > j^.info.Rating) then
-                            min :=  j
-                            else
-                                j := j^.pNext
-                     end;
-               i := i^.pNext;
-            end;
-
-      min := temp;
-      i := j;
-      j := i;
-
-      TampilData();
-      readln;
-end;
-
-
-
-
-//pengurutan berdasarkan selection sort (minimal)
-procedure UrutTahun(var pHead, pTail : Ptr);
-{I.S. : }
-{F.S. : }
-var
-    j, i, min, temp : Ptr;
-
-begin
-     i := pHead;
-     while (i <> pTail) do
-           begin
-               min := i;
-               j := i^.pNext;
-               while (j <> nil) do
-                     begin
-                         if (i^.info.Tahun > j^.info.Tahun) then
-                            min :=  j
-                            else
-                                j := j^.pNext
-                     end;
-               i := i^.pNext;
-            end;
-
-      min := temp;
-      i := j;
-      j := i;
-
-      TampilData();
-      readln;
-end;
-
-
-
-
-procedure Pengurutan();
-{I.S. : }
-{F.S. :}
-var
-   pilih  : integer;
-
-begin
-     gotoxy(25,5);  WriteLn('-------------------------------------------');
-     gotoxy(25,6);  writeln('|             PILIH PENGURUTAN            |');
-     gotoxy(25,7);  writeln('-------------------------------------------');
-     gotoxy(25,8);  writeln('|  1  |  PENGURUTAN BERDASARKAN JUDUL     |');
-     gotoxy(25,9);  writeln('|  2  |  PENGURUTAN BERDASARKAN GENRE     |');
-     gotoxy(25,10); writeln('|  3  |  PENGURUTAN BERDASARKAN RATING    |');
-     gotoxy(25,11); writeln('|  4  |  PENGURUTAN BERDASARKAN TAHUN     |');
-     gotoxy(25,12); writeln('-------------------------------------------');
-     gotoxy(37,14); write('Pilih  : '); readln(pilih);
-
-     clrscr;
-     //mencari berdasarkan judul
-     if (pilih = 1) then
-        UrutJudul(pHead, pTail)
-        else if (pilih = 2) then
-                UrutGenre(pHead, pTail)
-                else if (pilih = 3) then
-                       UrutRating(pHead, pTail)
-                       else if (pilih = 4) then
-                               UrutTahun(pHead, pTail)
-                               else
-                               gotoxy(37,14); writeln('Data yang anda masukan salah!');
-
-end;
-
-
-
-
-
-
-
-procedure Penghancuran(var pHead, pTail : Ptr);
-{I.S. : }
-{F.S. : }
-var
-   Phapus : Ptr;
-
-begin
-     Phapus := pHead;
-     while (Phapus <> nil) do
-     begin
-         pHead := pHead^.pNext;
-         Dispose(Phapus);
-         Phapus := pHead;
-     end; //EndWhile
-     pTail := nil;
-end;
-
-
-
-
-
-
-//badan program utama
-begin
-     create();
-     repeat
-           showMenu();
-           gotoxy(37,15); write('Pilih  : '); readln(pilih);
-           clrscr;
-           if (pilih = 1) then
-              TambahData()
-              else if (pilih = 2) then
-                      TampilData()
-                      else if (pilih = 3) then
-                              MenuPencarian()
-                              else if (pilih = 4) then
-                                   Pengurutan();
-
-
-     until(pilih = 5);
-
-
-     Penghancuran(pHead, pTail);
-     if (pHead = nil) then
-        begin
-             writeln('Data Sudah Kosong!');
-        end;
-
-     readln;
+  // Penghancuran(pHead, pTail);
+  // if (pHead = nil) then
+  // begin
+  //   writeln('Data Sudah Kosong!');
+  // end;
 end.

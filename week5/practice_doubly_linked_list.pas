@@ -133,33 +133,33 @@ begin
   begin
     temp^.prev := nil;
     head := temp;
-    write('Masukkan Nama  : '); readln(temp^.info.nama);
+    // write('Masukkan Nama  : '); readln(temp^.info.nama);
   end
   else
   begin
-    new(temp2);
-    temp2 := head;
-    found := false;
-    while (not found) and (temp2 <> nil) do
-    begin
-      if (temp2^.info.nim = temp^.info.nim) then
-      begin
-        found := true;
-      end
-      else
-      begin
-        temp2 := temp^.next;
-      end;
-    end;
+    // new(temp2);
+    // temp2 := head;
+    // found := false;
+    // while (not found) and (temp2 <> nil) do
+    // begin
+    //   if (temp2^.info.nim = temp^.info.nim) then
+    //   begin
+    //     found := true;
+    //   end
+    //   else
+    //   begin
+    //     temp2 := temp^.next;
+    //   end;
+    // end;
 
-    if (found) then
-    begin
-      writeln('Maaf NIM sudah terdaftar!');
-    end
-    else
-    begin
-      write('Masukkan Nama  : '); readln(temp^.info.nama);
-    end;
+    // if (found) then
+    // begin
+    //   writeln('Maaf NIM sudah terdaftar!');
+    // end
+    // else
+    // begin
+    //   write('Masukkan Nama  : '); readln(temp^.info.nama);
+    // end;
 
     temp^.prev := tail;
     tail^.next := temp;
