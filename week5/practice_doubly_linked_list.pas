@@ -28,7 +28,6 @@ begin
   new(head); new(tail);
   head := nil;
   tail := nil;
-
 end;
 
 { Addition }
@@ -184,68 +183,31 @@ begin
   
   while (temp <> nil) do
   begin
-
-    change := temp;
-
+    change^.info := temp^.info;
     if (head2 = nil) then
     begin
-      change^.next := nil;
+      write('head2 = nil'); readln;
       change^.prev := nil;
+      change^.next := nil;
       head2 := change; tail2 := change;
-      write('head2 = empty ', change^.info.nim, ' - ', head2^.info.nim); readln;
-    end // head2 = nil
+    end
     else
     begin
-
-      write('head2 != empty'); readln;
-
-      if (temp^.info.nim < head2^.info.nim) then
+      write('head2 <> nil'); readln;
+      write('')
+      if (change^.info.nim < head2^.info.nim) then
       begin
-
-        // addAtFirst(head2, tail2, temp^.info.nim); // elaborate more
-        // change^.prev := nil;
-        // change^.next := head2;
-        // head2^.prev := change;
-        // head2 := change;
-        write('insertAtFront ', change^.info.nim, ' - ', head2^.info.nim);
-        readln;
-
-      end // addAtFirst
-      else if (temp^.info.nim > tail2^.info.nim) then
-      begin
-
-        // addAtLast(head2, tail2, temp^.info.nim); // elaborate more
-        // change^.prev := tail2;
-        // change^.next := nil;
-        // tail2^.next := change;
-        // tail2 := change;
-        write('insertAtBack ', change^.info.nim, ' - ', head2^.info.nim);
-        readln;
-
-      end; // addAtLast
-    //   else
-    //   begin
-    //     // addAtMid(head2, tail2, temp^.info.nim); // elaborate more
-    //     // change2 := head2;
-
-    //     // while (change2 <> nil) and (change2^.info.nim < change^.info.nim) do
-    //     // begin
-    //     //   change2 := change2^.next;
-    //     // end;
-        
-    //     // change^.prev := change2^.prev;
-    //     // change^.next := change2;
-    //     // change2^.prev^.next := change;
-    //     // change2^.prev := change;
-    //     write('insertAtMid ', change^.info.nim, ' - ', head2^.info.nim);
-    //     readln;
-
-    //   end; // addAtMid
-    end; // head2 <> nil
+        write('temp < head2'); readln;
+        change^.prev := nil;
+        change^.next := head2;
+        head2^.prev := change;
+        head2 := change;
+      end;
+    end;
 
     write('temp : ', temp^.info.nim); readln;
     temp := temp^.next;
-  end;
+  end; // while temp
 end;
 
 procedure show(head, tail : point);
@@ -340,7 +302,7 @@ begin
 
   // sort list
   sort(head1, tail1, head2, tail2);
-  show(head2, tail2);
+  // show(head2, tail2);
 
 
   // datahapus := search(head2, tail2);
