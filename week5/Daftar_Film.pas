@@ -21,6 +21,7 @@ type
 var
    pHead, pTail : Ptr;
    select       : integer;
+   n            : integer; // total data saat ini
 
 procedure create(var pHead, pTail : Ptr);
 {I.S. : pHead dan pTail belum terdefinisi}
@@ -69,7 +70,64 @@ begin
   end;
 
   pHead := pNew;
+  inc(n);
 end; // EndProcedure insertAtFront
+
+procedure insertAtMiddle(var pHead, pTail : Ptr);
+{I.S. : }
+{F.S. : }
+{Kamus Lokal}
+var
+   pNew, pHelp  : Ptr;
+   i            : integer;
+{Algoritma}
+begin
+  new(pNew);
+  new(pHelp);
+
+  if (n > 1) then
+  begin
+    i := 1;
+    gotoxy(15,9);  writeln('------------------------------------------------------------------------------------');
+    gotoxy(15,10); writeln('|                              Input Student Data                                  |');
+    gotoxy(15,11); writeln('------------------------------------------------------------------------------------');
+    gotoxy(15,12); writeln('|  No  |         Student ID         |                Name                  |  GPA  |');
+    gotoxy(15,13); writeln('------------------------------------------------------------------------------------');
+    gotoxy(15,14); writeln('|      |                            |                                      |       |');
+    gotoxy(15,15); writeln('------------------------------------------------------------------------------------');
+    gotoxy(17,14); write(i);
+    gotoxy(24,14); readln(pNew^.info.id);
+    gotoxy(53,14); readln(pNew^.info.name);
+    gotoxy(92,14); readln(pNew^.info.gpa);
+
+  // if (pHead = nil) then
+  // begin
+  //   pNew^.pPrev := nil;
+  //   pNew^.pNext := nil;
+  //   pHead := pNew;
+  //   pTail := pNew;
+  // end
+  // else
+  // begin
+    pHelp := pHead;
+    
+    while (pHelp^.pNext <> nil) do
+    begin
+      pHelp := pHelp^.pNext;
+    end;
+
+    pNew^.pPrev := pHelp^.pPrev;
+    pNew^.pNext := pHelp;
+    pHelp^.pPrev^.pNext := pNew;
+    pHelp^.pPrev := pNew;
+
+    inc(n);
+  end
+  else
+  begin
+    write('Data harus lebih dari 2!'); readln;
+  end;
+end; // EndProcedure insertAtMiddle
 
 procedure insertAtBack(var pHead, pTail : Ptr);
 {I.S. : }
@@ -108,34 +166,8 @@ begin
   end;
 
   pTail := pNew;
+  inc(n);
 end; // EndProcedure insertAtBack
-
-{
-procedure SisipTengah(var pHead, pTail : Ptr);
-
-begin
-     pHelp := pHead;
-     found := False;
-     gotoxy(15,11); writeln('--------------------------------------');
-     gotoxy(15,12); write  ('|  CARI BERDASARKAN INDEX  |          |'); readln(Cari);
-     gotoxy(15,13); writeln('--------------------------------------');
-     while (not found) and (pHelp <> nil) do
-           begin
-               if (dataCari = pHelp^.info.Tahun) then
-                 begin
-                      found := True;
-                 end
-                 else
-                     pHelp := pHelp^.pNext;
-           end;
-
-     if (found) then
-        begin
-
-
-        end;
-end;
-}
 
 procedure showMenu(var select : integer);
 {I.S. : }
@@ -181,13 +213,13 @@ begin
   end
   else if (select = 2) then
   begin
-    // insertAtBack(pHead, pTail);
-    write('middle'); readln;
+    insertAtMiddle(pHead, pTail);
+    // write('middle'); readln;
   end
   else if (select = 3) then
   begin
     insertAtBack(pHead, pTail);
-    write('back'); readln;
+    // write('back'); readln;
   end;
 end;
 
@@ -537,6 +569,7 @@ end;
 { Algoritma Utama }
 begin
   create(pHead, pTail);
+  n := 0; // total awal data
 
   repeat
     showMenu(select);
