@@ -37,18 +37,18 @@ procedure insertAtFront(var pHead, pTail : Ptr);
 {F.S. : }
 {Kamus Lokal}
 var
-   pNew, pHelp : Ptr;
-   found       : boolean;
-   i           : integer;
+   pNew : Ptr;
+   i    : integer;
 {Algoritma}
 begin
   new(pNew);
+  pNew^.pPrev := nil;
+
   i := 1;
   gotoxy(15,9);  writeln('------------------------------------------------------------------------------------');
   gotoxy(15,10); writeln('|                              Input Student Data                                  |');
   gotoxy(15,11); writeln('------------------------------------------------------------------------------------');
   gotoxy(15,12); writeln('|  No  |         Student ID         |                Name                  |  GPA  |');
-  
   gotoxy(15,13); writeln('------------------------------------------------------------------------------------');
   gotoxy(15,14); writeln('|      |                            |                                      |       |');
   gotoxy(15,15); writeln('------------------------------------------------------------------------------------');
@@ -57,10 +57,9 @@ begin
   gotoxy(53,14); readln(pNew^.info.name);
   gotoxy(92,14); readln(pNew^.info.gpa);
 
-  If (pHead = nil) then
+  if (pHead = nil) then
   begin
     pNew^.pNext := nil;
-    pNew^.pPrev := nil;
     pTail := pNew;
   end
   else
@@ -72,66 +71,44 @@ begin
   pHead := pNew;
 end; // EndProcedure insertAtFront
 
-{}
-// procedure insertAtBack(var pHead, pTail : Ptr);
-// {I.S. : }
-// {F.S. : }
-// var
-//    pNew, pHelp : Ptr;
-//    found      : boolean;
-//    k           : integer;
+procedure insertAtBack(var pHead, pTail : Ptr);
+{I.S. : }
+{F.S. : }
+{Kamus Lokal}
+var
+   pNew : Ptr;
+   i    : integer;
+{Algoritma}
+begin
+  new(pNew);
+  pNew^.pNext := nil;
 
-// begin
-//      New(pNew);
+  i := 1;
+  gotoxy(15,9);  writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,10); writeln('|                              Input Student Data                                  |');
+  gotoxy(15,11); writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,12); writeln('|  No  |         Student ID         |                Name                  |  GPA  |');
+  gotoxy(15,13); writeln('------------------------------------------------------------------------------------');
+  gotoxy(15,14); writeln('|      |                            |                                      |       |');
+  gotoxy(15,15); writeln('------------------------------------------------------------------------------------');
+  gotoxy(17,14); write(i);
+  gotoxy(24,14); readln(pNew^.info.id);
+  gotoxy(53,14); readln(pNew^.info.name);
+  gotoxy(92,14); readln(pNew^.info.gpa);
 
-//      gotoxy(15,9);  writeln('------------------------------------------------------------------------------------------------------');
-//      gotoxy(15,15); writeln('|                                   MASUKAN DATA DAFTAR FILM                                         |');
-//      gotoxy(15,11); writeln('------------------------------------------------------------------------------------------------------');
-//      gotoxy(15,12); writeln('|        GENRE         |                JUDUL                  | RATING |  TAHUN  |       HARGA      |');
-//      gotoxy(15,13); writeln('------------------------------------------------------------------------------------------------------');
-//      gotoxy(15,14); writeln('|                      |                                       |        |         |RP.               |');
-//      gotoxy(15,15); writeln('------------------------------------------------------------------------------------------------------');
-//      gotoxy(11,14); write(' '); readln(pNew^.info.Genre);
+  if (pHead = nil) then
+  begin
+    pNew^.pPrev := nil;
+    pHead := pNew;
+  end
+  else
+  begin
+    pNew^.pPrev := pTail;
+    pTail^.pNext := pNew;
+  end;
 
-//      {
-//      for i:=1 to 2 do
-//          begin
-//               code_addLast := code_addLast + pNew^.info.Genre[i];
-//          end;
-
-//      pNew^.info.Kode := code_addLast;
-//      }
-
-
-//      gotoxy(34,14); write(' '); readln(pNew^.info.Judul);
-//      gotoxy(75,14); write(' '); readln(pNew^.info.Rating);
-//      gotoxy(84,14); write(' '); readln(pNew^.info.Tahun);
-//      gotoxy(96,14); write(' '); readln(pNew^.info.Harga);
-
-//      for k:= 2 to 3 do
-//          begin
-//               pNew^.info.Kode := pNew^.info.Kode + pNew^.info.Judul[k];
-//          end;
-
-//      for k:= 1 to 2 do
-//          pNew^.info.Kode := pNew^.info.Kode + pNew^.info.Genre[k];
-
-
-//      If (pHead = nil) then
-//        begin
-//             pNew^.pNext := nil;
-//             pNew^.pPrev := nil;
-//             pHead := pNew;
-//             pTail := pNew;
-//        end
-//           else
-//               begin
-//                    pNew^.pPrev := pTail;
-//                    pNew^.pNext := nil;
-//                    pTail^.pNext := pNew;
-//                    pTail := pNew;
-//               end;
-// end;
+  pTail := pNew;
+end; // EndProcedure insertAtBack
 
 {
 procedure SisipTengah(var pHead, pTail : Ptr);
@@ -176,7 +153,7 @@ begin
     gotoxy(50,11); writeln('|  4.  Show Data                          |');
     gotoxy(50,12); writeln('|  5.  Exit                               |');
     gotoxy(50,13); writeln('-------------------------------------------');
-    gotoxy(50,15); write('Select  : '); readln(select);
+    gotoxy(50,14); write('Select  : '); readln(select);
 end; // EndProcedure showMenu()
 
 procedure addData(var pHead, pTail : Ptr);
@@ -190,10 +167,10 @@ begin
   gotoxy(50,6);  writeln('|         Select insertion method         |');
   gotoxy(50,7);  writeln('-------------------------------------------');
   gotoxy(50,8);  writeln('|  1.  Insert at Front                    |');
-  gotoxy(50,9);  writeln('|  2.  Insert at Back                     |');
-  gotoxy(50,10); writeln('|  3.  Insert at Middle                   |');
+  gotoxy(50,9);  writeln('|  2.  Insert at Middle                   |');
+  gotoxy(50,10); writeln('|  3.  Insert at Back                     |');
   gotoxy(50,11); writeln('-------------------------------------------');
-  gotoxy(50,13); write('Select  : '); readln(select);
+  gotoxy(50,12); write('Select  : '); readln(select);
 
   clrscr;
   //mencari berdasarkan judul
@@ -205,12 +182,12 @@ begin
   else if (select = 2) then
   begin
     // insertAtBack(pHead, pTail);
-    write('back'); readln;
+    write('middle'); readln;
   end
   else if (select = 3) then
   begin
-    // insertAtBack(pHead, pTail);
-    write('middle'); readln;
+    insertAtBack(pHead, pTail);
+    write('back'); readln;
   end;
 end;
 
