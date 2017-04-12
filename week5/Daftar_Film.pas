@@ -169,6 +169,24 @@ begin
   inc(n);
 end; // EndProcedure insertAtBack
 
+procedure destroy(var pHead, pTail : Ptr);
+{I.S. : pHead dan pTail belum terdefinisi}
+{F.S. : Menghancurkan nilai pada pHead dan pTail}
+{Kamus Lokal}
+var
+  pDel := Ptr;
+{Algoritma}
+begin
+  pDel := pHead;
+  while (pDel <> nil) do
+  begin
+    pHead := pHead^.pNext;
+    dispose(pDel);
+    pDel := pHead;
+  end;
+  pTail := nil;
+end; // EndProcedure destroy()
+
 procedure showMenu(var select : integer);
 {I.S. : }
 {F.S. : Menampilkan menu}
@@ -574,27 +592,25 @@ begin
   repeat
     showMenu(select);
     clrscr;
-    if (select = 1) then
-    begin
-      addData(pHead, pTail);
-    end
-    else if (select = 2) then
-    begin
-      // Pengurutan();
-    end
-    else if (select = 3) then
-    begin
-      // MenuPencarian()
-    end
-    else if (select = 4) then
-    begin
-      showData(pHead);
-    end;
+    case (select) of
+      1:
+      begin
+        addData(pHead, pTail);  
+      end;
+      2:
+      begin
+        // Pengurutan();
+      end;
+      3:
+      begin
+        // MenuPencarian()
+      end;
+      4:
+      begin
+        showData(pHead);
+      end;
   until (select <= 0) or (select > 4);
 
-  // Penghancuran(pHead, pTail);
-  // if (pHead = nil) then
-  // begin
-  //   writeln('Data Sudah Kosong!');
-  // end;
+  destroy(pHead, pTail);
+  writeln('Data has been successfully destroyed!');
 end.
