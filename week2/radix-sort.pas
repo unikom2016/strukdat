@@ -1,5 +1,8 @@
 program radix_sort;
 
+uses
+  sysutils;
+
 const
   maks = 7;
   total = 10;
@@ -182,7 +185,8 @@ begin
     
     arr_temp := arr_data;
 
-    n := sizeof(arr_data) div sizeof(arr_data[0]);
+    // n := sizeof(arr_data) div sizeof(arr_data[0]);
+    n := length(arr_data);
     radixsort(arr_data, n);
     
     writeln;
