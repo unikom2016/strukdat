@@ -1,0 +1,8 @@
+Source code: https://gist.github.com/anonymous/8d3c839b08e53126929c35ccb15746bb
+
+References:
+
+- https://www.thinkage.ca/english/gcos/expl/pasc/lib/chr.html
+- http://www.gnu-pascal.de/gpc/Type-Casts.html
+- https://stackoverflow.com/questions/16945180/pascal-how-to-convert-real-to-integer-variable
+- http://wiki.freepascal.org/Character_and_string_types
