@@ -3,148 +3,263 @@ program U_Kalkulator_array;
 uses crt;
 
 const
-     maxStack=100;
-	 
+     maxStack = 1000;
+     numeric  = ['0'..'9'];
+     opr      = ['^']+['/']+['*']+['+']+['-'];
+      
 type
-    TStack1 = array[1..maxStack] of integer; // operands
-    TStack = array[1..maxStack] of char;	 // operator
-	EStack = record
-		info : TStack;
+    TString = array[1..maxStack] of string; // just store array of string
+    TInteger = array[1..maxStack] of integer; // operands
+    TChar = array[1..maxStack] of char;	 // operator / simbol
+    
+    CStack = record
+		info : TChar;
 		top	 : integer;
-	end;
+    end;
+    
+    SStack = record
+		info : TString;
+		top	 : integer;
+    end;
+    
+    IStack = record
+		info : TInteger;
+		top	 : integer;
+    end;
 	
-procedure inisialisasi_stack(var top:integer);
+procedure initStack(var top: integer);
 begin
-     top:=0;
+     top := 0;
 end;
 
-function kosong(top:integer):boolean;
+function isEmpty(top: integer): boolean;
 begin
-     if top=0 then
-        kosong:=true
+     if (top = 0) then
+        isEmpty := true
      else
-         kosong:=false;
+        isEmpty := false;
 end;
 
-function penuh(top:integer):boolean;
+function isFull(top:integer): boolean;
 begin
-     penuh:= top = maxstack;
+     isFull := top = maxstack;
 end;
 
-procedure push(databaru:char; var stack:TStack; var top:integer);
+procedure push(databaru: char; var stack: TChar; var top: integer);
 begin
-     // if penuh(top)=false then
-	 if not penuh(top) then
+	 if not isFull(top) then
      begin
           top:=top+1;
           stack[top]:=databaru;
      end
      else
-         writeln('Stack sudah penuh');
+         writeln('Stack sudah isFull');
 end;
 
-procedure pop(var stack:TStack; var top:integer;var data:char);
+procedure push(databaru: string; var stack: TString; var top: integer);
 begin
-     if not kosong(top) then // not kosong(top) <===> kosong(top)=false
+	 if not isFull(top) then
+     begin
+          top:=top+1;
+          stack[top]:=databaru;
+     end
+     else
+         writeln('Stack sudah isFull');
+end;
+
+// procedure push(databaru: char; var stack: TInteger; var top: integer);
+// begin
+// 	 if not isFull(top) then
+//      begin
+//           top:=top+1;
+//           stack[top]:=databaru;
+//      end
+//      else
+//          writeln('Stack sudah isFull');
+// end;
+
+procedure pop(var stack: TChar; var top: integer; var data: char);
+begin
+     if not isEmpty(top) then // not isEmpty(top) <===> isEmpty(top)=false
      begin
           data:=stack[top];
           top:=top-1;
      end else
-         writeln('Stack kosong. POP gagal');
+         writeln('Stack isEmpty. POP gagal');
 end;
 
-procedure tampil(stack : EStack);
+procedure pop(var stack: TString; var top: integer; var data: string);
+begin
+     if not isEmpty(top) then // not isEmpty(top) <===> isEmpty(top)=false
+     begin
+          data:=stack[top];
+          top:=top-1;
+     end else
+         writeln('Stack isEmpty. POP gagal');
+end;
+
+procedure pop(var stack: TInteger; var top: integer; var data: integer);
+begin
+     if not isEmpty(top) then // not isEmpty(top) <===> isEmpty(top)=false
+     begin
+          data:=stack[top];
+          top:=top-1;
+     end else
+         writeln('Stack isEmpty. POP gagal');
+end;
+
+procedure print(stack : CStack);
 var
 	i : integer;
 begin
 	for i := 1 to stack.top do
 	begin
 		write(stack.info[i]);
-		if (i <> stack.top) then write(' ');
+		if (i <> stack.top) then write(', ');
 	end;
 end;
 
-Procedure postfix(var stack:TStack; var p : EStack);
+procedure print(stack : SStack);
 var
-top, j,i, x : integer;
-pri: Tstack1; // operands
-form : string;
-opr: set of char;
-kr: char;
+	i : integer;
 begin
-        clrscr;
-        j := 0;
-		inisialisasi_stack(p.top); // inisialisai Expressions P
-        opr:=['^']+['/']+['*']+['+']+['-'];
-        writeln('Program konversi infix to postfix');
-        write('Notasi Infix   : '); readln(form);
-        write('Notasi Postfix : ');
-		{* 1. *}
-		push('(', stack, top);
-		form := form + ')';
-		
-		{* 2. *}
-        for i := 1 to length(form) do
+	for i := 1 to stack.top do
+	begin
+		write(stack.info[i]);
+		if (i <> stack.top) then write(', ');
+	end;
+end;
+
+procedure print(stack : IStack);
+var
+	i : integer;
+begin
+	for i := 1 to stack.top do
+	begin
+		write(stack.info[i]);
+		if (i <> stack.top) then write(', ');
+	end;
+end;
+
+function isOperand(C: char): boolean;
+begin
+    isOperand := false;
+
+    if (C in numeric) then
+    begin
+        isOperand := true;
+    end;
+end;
+
+function isOperator(C: char): boolean;
+begin
+    isOperator := false;
+
+    if (C in opr) then
+    begin
+        isOperator := true;
+    end;
+end;
+
+// procedure infixToPostfix(var stack: CStack; var p: CStack);
+procedure infixToPostfix(var stack: CStack; var p: string);
+var
+    i, j, k: integer;
+    weight: TInteger; // operands
+    expressions: string;
+    cleanPostfix : SStack;
+    kr, krTemp: char;
+
+begin
+    clrscr;
+    j := 0; k := 0;
+    initStack(stack.top);
+    initStack(cleanPostfix.top);
+    // initStack(p.top);
+    writeln('Program konversi expressions to postfix');
+    write('Notasi Infix   : '); readln(expressions);
+    write('Notasi Postfix : ');
+    {* 1. *}
+    push('(', stack.info, stack.top);
+    expressions := expressions + ' )'; // sentinel
+
+    {* 2. *}
+    for i := 1 to length(expressions) do
+    begin
+            kr := expressions[i];
+            krTemp := 't';
+            {* 5. *}
+            if (isOperator(kr)) then // if operator encountered
+            begin
+                write('opr encountered'); readln();
+                write('combined p: ', p); readln();
+                if (stack.top > 1) then
                 begin
-                        kr := form[i];
-						{* 4.  *}
-                        if(kr = '(') then
-                                begin
-                                        // j:=j+1;
-                                        // stack[j] := kr;
-										push(kr, stack, top);
-                                        // pri[j]:=1;
-
-                                end
-						{* 6.  *}
-                        { else if(kr = ')') then
-                                begin
-                                        while (stack[j] <> '(') do
-                                                begin
-                                                        write(stack[j]);
-                                                        j:=j-1;
-                                                end;
-                                        if (stack[j]='(') then j:=j-1;
-                                end }
-								
-						{* 5. *}
-                        { else if(kr in opr) then
-                                begin
-                                        // j:=j+1;
-                                        case kr of
-                                                '^'     : pri[j] := 4;
-                                                '*','/' : pri[j] := 3;
-                                                '+','-' : pri[j] := 2;
-                                        end;
-                                        while (pri[j] <= pri[j-1]) do
-                                                begin
-                                                        write(stack[j-1]);
-                                                        pri[j-1] := pri[j];
-                                                        j:=j-1;
-
-                                                end;
-                                        stack[j]:=kr;
-                                end
-                        else if(kr = ';') then 
-                                begin
-                                        for x:=j downto 1 do 
-                                                begin
-                                                        write(stack[x]);
-                                                        // j:=j-1;
-                                                end
-                                end
-                        else if(kr <> ' ') then write(kr) }
-						
-						{* 3. If an operand is encountered, add it to Postfix *}
-						else
-						begin
-							push(kr, p.info, p.top);
-						end;
+                    push(p, cleanPostfix.info, cleanPostfix.top);
+                    p := '';
                 end;
-        // for x:=j downto 1 do write(p[x]);
-		
-		tampil(p); // tampilkan bentuk postfix
-//readln;
+                j := j + 1;
+                // write('masuk ke operator'); readln();
+                case kr of
+                    '^'     : weight[j] := 4;
+                    '*','/' : weight[j] := 3;
+                    '+','-' : weight[j] := 2;
+                end;
+                
+                while (weight[j-1] >= weight[j]) do // akan berjalan kalo udah ada data sebelumnya
+                begin
+                    //write(stack[j-1]);  // print (j - 1) operator
+                    write('masuk ke pengecekan operator'); readln();
+                    weight[j-1] := weight[j]; // overwrites j - 1 value with j
+                    j := j-1;
+                    pop(stack.info, stack.top, krTemp);
+                    push(krTemp, cleanPostfix.info, cleanPostfix.top);
+                end;
+                //j = j - 1;
+
+                push(kr, stack.info, stack.top);
+            end
+            {* 3. If an operand is encountered, add it to Postfix *}
+            else if (isOperand(kr) or (kr = '.') or (kr = ',')) then
+            begin
+                // push(kr, p.info, p.top);
+                p := p + kr;
+                writeln('p current: ', p);
+            end
+            {* 4.  *}
+            // write('scan simbol'); readln();
+            else if (kr = '(') then
+            begin
+                j:=j+1;
+                // stack[j] := kr;
+                // write('masuk ke ('); readln();
+                push(kr, stack.info, stack.top);
+                weight[j] := 1; // tingkatan ( = 1 
+            end //}
+            {* 6.  *}
+            else if (kr = ')') then
+            begin
+                while (stack.info[stack.top] <> '(') and (stack.top > 0) do
+                begin
+                    write('( encountered: ', stack.info[stack.top]); readln();
+                    pop(stack.info, stack.top, krTemp);
+                    push(krTemp, cleanPostfix.info, cleanPostfix.top);
+                end;
+                // if (stack.info[stack.top] = '(') then pop(stack.info, stack.top, krTemp);
+            end //}
+            else if ((kr = ';') or (kr = ' ')) then
+            begin
+                // continue;
+                write('blankspace encountered'); readln();
+                write('combined p: ', p); readln();
+                push(p, cleanPostfix.info, cleanPostfix.top);
+                p := '';
+            end;
+            writeln('curr postfix: ', cleanPostfix.info[cleanPostfix.top]);
+    end;
+
+    writeln();
+    write('Postfix: '); print(cleanPostfix); // tampilkan bentuk postfix
 end;
 
  Function Pangkat(m,n:real):real;
@@ -166,14 +281,14 @@ end;
    end;
 
 
-Procedure HitungPostfix(var Top:integer; var hasil:real; var hitung : real);
+{Procedure HitungPostfix(var Top:integer; var hasil:real; var hitung : real);
    var
       i : integer;
       SetOperator : set of char;
       Simbol : char;
       a,b: real;
       stack :Tstack;
-	  p 	: EStack;
+	  p 	: CStack;
 	   //Infix : AInfix;
 	   Huruf : string;
 	   data : char;
@@ -183,37 +298,33 @@ Procedure HitungPostfix(var Top:integer; var hasil:real; var hitung : real);
 
 
         SetOperator := ['^']+['*']+['/']+['+']+['-'];
-        Huruf := Huruf + ')'; {* ')' sentinel *}
-        postfix(stack, p);
+        Huruf := Huruf + ')'; // ')' sentinel
+        // infixToPostfix(stack, p);
         // push(databaru,stack,top);
-        {for i:=1 to top+1 do
+        for i:=1 to top+1 do
         begin
              Simbol:=Huruf[i];
              if(Simbol in SetOperator)
                then
                    begin
-						// 4. a 
 						Pop(stack,top,data);
                         b:=ord(data);
 						Pop(stack,top,data);
                         a:=ord(data);
  
-                        case Simbol of // 4. b 
+                        case Simbol of
                              '^' : hitung := Pangkat(a,b);
                              '*' : hitung := Kali(a,b);
                              '/' : hitung := a / b;
                              '+' : hitung := a+b;
                              '-' : hitung := a-b;
                         end;
- 
-						// 4. c 
                        push(chr(round(hitung)),Stack,Top); // mengonversi real -> int -> char 
                    end
                else
                    if(Simbol = ')')
                      then
                          begin
-							  // 5. 
 							  Pop(stack,top,data);
 							  hasil:=ord(data);
                          end
@@ -221,39 +332,32 @@ Procedure HitungPostfix(var Top:integer; var hasil:real; var hitung : real);
         end;
         writeln;
         write('Hasilnya adalah : ',hasil);
-                              readln;}
-   end;   
+                              readln;
+   end;   }
 
    
 var
-   top:integer;
-   stack : Tstack;
-   ulangi : char;
-   data : char;
-   hasil:real;
-   hitung : real;
+    //    stack    : Tstack;
+    stack    : CStack;
+    // p        : CStack;
+    p  : string;
+    ulangi   : char;
+    data     : char;
+    hasil    : real;
+    hitung   : real;
 	
-
 begin
-     inisialisasi_stack(top);
-     repeat
-     clrscr;
-    //push(stack,top);
-     writeln;
-     HitungPostfix(Top,hasil,hitung);
-     writeln;
-     writeln('Hitung Lagi (Y/T)');
+    repeat
+    clrscr;
+    writeln;
+    //HitungPostfix(Top,hasil,hitung);
+    infixToPostfix(stack, p);
+    writeln;
+    writeln('Hitung Lagi (Y/T)');
     repeat 
-    ulangi:=readkey; 
-    until (ulangi='y') or (ulangi='t'); 
+            ulangi:=readkey; 
+        until (ulangi='y') or (ulangi='t'); 
     until ulangi='t';
-      //POP
-       while not kosong(top) do
-     begin
-          pop(stack,top,data);
-          writeln(data,' ');
-     end;
-     writeln('Bye');
-     readln;
-
+    writeln('Bye');
+    readln;
 end.
