@@ -1,17 +1,22 @@
 program Calc;
 uses crt,sysutils;
+
+const
+  maks = 10000;
+  opr = ['^']+['*']+['/']+['+']+['-'];
+
 type
     PData=^TData;
     TData=record
-                info:string;
-                next:PData;
-           end;
+      info:string;
+      next:PData;
+    end;
 
     PPostfix  = ^TPostfix;
     TPostfix  = record
-                  Pinfo:string;
-                  Pnext:PPostfix;
-                end;
+      Pinfo:string;
+      Pnext:PPostfix;
+    end;
 var
    top:PData;
    topPostfix:PPostfix;
@@ -19,7 +24,6 @@ var
    data:string;
    pilih:char;
    j: integer;
-
 
 procedure inisialisasi_stack(var top:PData; var topPostfix:PPostfix);
 begin
@@ -90,84 +94,102 @@ begin
          writeln('Stack Kosong');
 end;
 
-procedure Ppop(var topPostfix:PPostfix;var elemen:string);
+procedure Ppop(var topPostfix: PPostfix; var elemen:string);
 var
    bantu:PPostfix;
 begin
      if not Pkosong(topPostfix) then
-
      begin
-          elemen:=topPostfix^.Pinfo;
-          bantu:=topPostfix;
-          topPostfix:=topPostfix^.Pnext;
-          dispose(bantu);
+        elemen:=topPostfix^.Pinfo;
+        bantu:=topPostfix;
+        topPostfix:=topPostfix^.Pnext;
+        dispose(bantu);
      end
      else
          writeln('Stack kosong, POP Failed');
 end;
 
+function isOperator(str: string);
+begin
+  
+end;
 
 procedure masukan(infix : string; var top:PData);
 var
-   i, PToken :integer;
-   Token : string;
-
+   i, j, PToken : integer;
+   weight       : array[1..maks] of integer;
+   Token        : string;
 begin
-   PToken      := 0;
-   infix   := infix + ')';
-   push('(',top);
-   for i := 1 to LENGTH(infix) do
-   begin
-      if(COPY(infix,i,1) = ')') or (COPY(infix,i,1) = '^') or ((COPY(infix,i,1) = '*') or (COPY(infix,i,1) = '/')) or ((COPY(infix,i,1) = '-')  or (COPY(infix,i,1) = '+')) then
-      begin
-      //OPERAND
-          Token := COPY(infix,i-PToken,PToken);
-          if(COPY(infix,i-PToken,1) = '(') then
-          begin
-            Token := COPY(infix,i-PToken,1);
-            push(Token,top);
-            Token := COPY(infix,(i+1)-PToken,PToken-1);
-          end;
-          if Token <> '' then
-          pushPostfix(Token,topPostfix);
+  PToken      := 0;
+  j           := 0;
+  infix       := infix + ')';
+  push('(', top);
 
-          PToken := -1;
- 
+  clrscr;
+  for i := 1 to LENGTH(infix) do
+  begin
+    if (COPY(infix,i,1) = ')') or (COPY(infix,i,1) = '^') or ((COPY(infix,i,1) = '*') or (COPY(infix,i,1) = '/')) or ((COPY(infix,i,1) = '-')  or (COPY(infix,i,1) = '+')) then
+    begin
+
+      //OPERAND
+      Token := COPY(infix,i-PToken,PToken);
+      // write('token (oprn): ', Token); readln();
+
+      if (COPY(infix,i-PToken,1) = '(') then
+      begin
+        Token := COPY(infix,i-PToken,1);
+        // write('token: ', Token); readln();
+        push(Token, top);
+        Token := COPY(infix,(i+1)-PToken,PToken-1);
+        // write('token: ', Token); readln();
+      end;
+      if Token <> '' then pushPostfix(Token,topPostfix);
+
+      PToken := -1;
 
       //TANDA ( )
-        Token :=COPY(infix,i,1);
+      Token := COPY(infix,i,1);
+      // write('token: ', Token); readln();
 
-        if Token = ')' then
-        begin
-           while top^.info <> '(' do
-           begin
-              pop(top,data);
-              pushPostfix(data,topPostfix);
-           end;
-           pop(top,data);
-        end
+      if Token = ')' then
+      begin
+          while top^.info <> '(' do
+          begin
+            pop(top,data);
+            pushPostfix(data,topPostfix);
+          end;
+          pop(top,data);
+      end
+      else //OPERATOR
+      begin
+          // write('token (opr): ', Token); readln();
+          inc(j);
+          case (Token) of
+            '^'     : weight[j] := 4;
+            '*', '/': weight[j] := 3;
+            '+', '-': weight[j] := 2;
+          end;
 
-        //OPERATOR
-        else
-        begin
-           if Token <= top^.info then
-           begin
-             while top^.info <> '(' do
-             begin
-              pop(top,data);
-              pushPostfix(data,topPostfix);
-             end;
-             push(Token,top);
-           end
-           else
-             push(Token,top);
-        end;
-       end;
+          // if Token <= top^.info then // check for ASCII table instead?
+          while (weight[j-1] >= weight[j]) do
+          begin
+            // while top^.info <> '(' do
+            // begin
+            weight[j-1] := weight[j];
+            dec(j);
+            pop(top,data);
+            pushPostfix(data,topPostfix);
+            // end;
+            // push(Token,top);
+          end;
+          // else
+          push(Token, top);
+      end;
+    end;
 
+    PToken := PToken + 1;
 
-       PToken := PToken + 1;
-
-   end;
+  end; // endfor
 end;
 
 function pangkat(var1:real;var2:real):real;
@@ -191,14 +213,18 @@ begin
       if (COPY(Postfix,i,1)= ' ') then
       begin
 
-         if(COPY(Postfix,i-1,1) = '^') or (COPY(Postfix,i-1,1) = '*') or(COPY(Postfix,i-1,1) = '/') or (COPY(Postfix,i-1,1) = '+') or (COPY(Postfix,i-1,1) = '-') then
+         if(COPY(Postfix,i-1,1) = '^') or (COPY(Postfix,i-1,1) = '*') 
+         or (COPY(Postfix,i-1,1) = '/') or 
+         (COPY(Postfix,i-1,1) = '+') or (COPY(Postfix,i-1,1) = '-') then
          begin
             opr1 := COPY(Postfix,i-1,1);
+            write('operator: ', opr1); readln;
 
             pop(top,data);
-            var1 := StrToFloat(data);
+            var1 := StrToFloat(data); readln();
             pop(top,data);
-            var2 := StrToFloat(data);
+            var2 := StrToFloat(data); readln();
+            write('var1: ', var1, '; var2: ', var2); readln();
 
             if opr1 = '+'  then
               hitung := var2 + var1
@@ -213,14 +239,18 @@ begin
 
 
             Shitung := FloatToStr(hitung);
-            push(Shitung,top);
-         end
+            write('Hitung: ', Shitung); readln();
 
+            push(Shitung, top);
+         end
          else
          begin
-             Token := COPY(Postfix,i-PToken,PToken);
-             push(Token,top);
-             PToken := -1;
+            Token := COPY(Postfix, i-PToken, PToken);
+            write('Postfix: ', Postfix); readln();
+            write('i(', i, ')-PToken(', PToken, '): ', i-PToken); readln();
+            write('token(', PToken, '): ', Token); readln();
+            push(Token,top);
+            PToken := -1;
          end;
       end
       else if (COPY(Postfix,i,1)= ')' ) then
