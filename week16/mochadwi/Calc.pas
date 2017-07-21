@@ -3,7 +3,7 @@ uses crt,sysutils;
 
 const
   maks = 10000;
-  opr = ['^']+['*']+['/']+['+']+['-'];
+  opr = ['^']+['*']+['/']+['+']+['-']; // operator
 
 type
     PData=^TData;
@@ -109,9 +109,34 @@ begin
          writeln('Stack kosong, POP Failed');
 end;
 
-function isOperator(str: string);
+function isOperator(c: string): boolean;
+{I.S.: Check for str value wheter its opr or not}
+{F.S.: Return true if opr}
+var
+  i: integer;
 begin
-  
+  isOperator := false;
+  for i := 0 to length(c) do
+  begin
+    if (c[i] in opr) then
+    begin
+      isOperator := true;
+      break;
+    end;
+  end;
+end;
+
+function isOperator(c: char): boolean;
+{I.S.: Check for c value wheter its opr or not}
+{F.S.: Return true if opr}
+var
+  i: integer;
+begin
+  isOperator := false;
+  if (c in opr) then
+  begin
+    isOperator := true;
+  end;
 end;
 
 procedure masukan(infix : string; var top:PData);
@@ -202,7 +227,7 @@ end;
 
 procedure hitung(Postfix:string; top:PData; var value : string);
 var
-   PToken, N_Postfix, i, kode1, kode2 : integer;
+   PToken, N_Postfix, i, j, kode1, kode2 : integer;
    var1, var2, hitung: real;
    Token, opr1, Shitung : string;
 begin
@@ -213,9 +238,7 @@ begin
       if (COPY(Postfix,i,1)= ' ') then
       begin
 
-         if(COPY(Postfix,i-1,1) = '^') or (COPY(Postfix,i-1,1) = '*') 
-         or (COPY(Postfix,i-1,1) = '/') or 
-         (COPY(Postfix,i-1,1) = '+') or (COPY(Postfix,i-1,1) = '-') then
+         if(isOperator(COPY(Postfix,i-1,1))) then
          begin
             opr1 := COPY(Postfix,i-1,1);
             write('operator: ', opr1); readln;
@@ -245,6 +268,14 @@ begin
          end
          else
          begin
+            Token := COPY(Postfix, i-PToken, PToken);
+            write('Postfix: ', Postfix); readln();
+            write('i(', i, ')-PToken(', PToken, '): ', i-PToken); readln();
+            write('token(', PToken, '): ', Token); readln();
+            if (isOperator(Token)) then
+            begin
+              dec(PToken);
+            end;
             Token := COPY(Postfix, i-PToken, PToken);
             write('Postfix: ', Postfix); readln();
             write('i(', i, ')-PToken(', PToken, '): ', i-PToken); readln();
